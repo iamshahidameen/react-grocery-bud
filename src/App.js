@@ -15,6 +15,11 @@ function App() {
       console.log(list);
     }
   }
+  function deleteItem(name) {
+    let newList = list.filter((listItem) => listItem !== name);
+    console.log(newList);
+    setList(newList);
+  }
   return (
     <>
       <section className="section-center">
@@ -36,7 +41,9 @@ function App() {
         <div className="grocery-container">
           <div className="grocery-list">
             {list.map((listItem, index) => {
-              return <List key={index} name={listItem} />;
+              return (
+                <List key={index} name={listItem} deleteItem={deleteItem} />
+              );
             })}
           </div>
           <button className="clear-btn">clear items</button>
