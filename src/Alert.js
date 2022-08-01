@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
-const Alert = ({ itemName }) => {
+const Alert = ({ message, type }) => {
   return (
     <>
-      <p className="alert alert-success">Item Added</p>
+      <p className={`alert alert-${type}`}>{message} Added to the list</p>
     </>
   );
 };
