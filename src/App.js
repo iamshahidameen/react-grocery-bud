@@ -6,6 +6,7 @@ function App() {
   const [form, setForm] = useState('');
   const [item, setItem] = useState('');
   const [list, setList] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
   const [alert, setAlert] = useState({ show: false, msg: '', type: '' });
 
   function handleSubmit(e) {
@@ -14,13 +15,30 @@ function App() {
       setList([...list, item]);
       setItem('');
       console.log(list);
-      setAlert({ show: true, msg: item, type: 'success' });
+      setAlert({
+        show: true,
+        msg: item + ' Added to the list',
+        type: 'success',
+      });
     }
   }
   function deleteItem(name) {
     let newList = list.filter((listItem) => listItem !== name);
     console.log(newList);
     setList(newList);
+    setAlert({
+      show: true,
+      msg: name + ' has been deleted from the list',
+      type: 'danger',
+    });
+  }
+  function clearAll() {
+    setAlert({
+      show: true,
+      msg: 'List Deleted',
+      type: 'danger',
+    });
+    setList([]);
   }
   useEffect(() => {
     const timeOut = setTimeout(() => {
@@ -44,20 +62,26 @@ function App() {
               onChange={(e) => setItem(e.target.value)}
             />
             <button type="submit" className="submit-btn">
-              submit
+              {isEditing ? 'Edit' : 'Submit'}
             </button>
           </div>
         </form>
-        <div className="grocery-container">
-          <div className="grocery-list">
-            {list.map((listItem, index) => {
-              return (
-                <List key={index} name={listItem} deleteItem={deleteItem} />
-              );
-            })}
+        {list.length > 0 ? (
+          <div className="grocery-container">
+            <div className="grocery-list">
+              {list.map((listItem, index) => {
+                return (
+                  <List key={index} name={listItem} deleteItem={deleteItem} />
+                );
+              })}
+            </div>
+            <button className="clear-btn" onClick={clearAll}>
+              clear items
+            </button>
           </div>
-          <button className="clear-btn">clear items</button>
-        </div>
+        ) : (
+          ''
+        )}
       </section>
     </>
   );
