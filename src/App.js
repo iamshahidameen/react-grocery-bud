@@ -6,6 +6,7 @@ function App() {
   const [form, setForm] = useState('');
   const [item, setItem] = useState('');
   const [list, setList] = useState([]);
+  const [alert, setAlert] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -13,6 +14,7 @@ function App() {
       setList([...list, item]);
       setItem('');
       console.log(list);
+      setAlert(true);
     }
   }
   function deleteItem(name) {
@@ -20,10 +22,19 @@ function App() {
     console.log(newList);
     setList(newList);
   }
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      setAlert(false);
+    }, 5000);
+    return () => clearTimeout(timeOut);
+  }, [alert]);
+  console.log(item, 'newwww');
   return (
     <>
       <section className="section-center">
         <form className="grocery-form" onSubmit={handleSubmit}>
+          {alert ? <Alert itemName={item} /> : ''}
+
           <h3>grocery bud</h3>
           <div className="form-control">
             <input
