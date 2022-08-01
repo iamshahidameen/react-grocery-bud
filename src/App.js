@@ -11,7 +11,14 @@ function App() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (item) {
+    if (!item) {
+      setAlert({
+        show: true,
+        msg: ' Please enter the value in field',
+        type: 'danger',
+      });
+    } else if (item && isEditing) {
+    } else {
       setList([...list, item]);
       setItem('');
       console.log(list);
