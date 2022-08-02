@@ -3,61 +3,90 @@ import List from './List';
 import Alert from './Alert';
 
 function App() {
-  const [form, setForm] = useState('');
   const [item, setItem] = useState('');
   const [list, setList] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [editID, setEditID] = useState(null);
   const [alert, setAlert] = useState({ show: false, msg: '', type: '' });
 
   function handleSubmit(e) {
     e.preventDefault();
     if (!item) {
-      setAlert({
-        show: true,
-        msg: ' Please enter the value in field',
-        type: 'danger',
-      });
+      // setAlert({
+      //   show: true,
+      //   msg: ' Please enter the value in field',
+      //   type: 'danger',
+      // });
+      //  Optimized Alert Functionality with function
+      showALert(true, 'danger', `Please enter the value in field`);
     } else if (item && isEditing) {
+      setList(
+        list.map((itemNew, index) => {
+          if (index === editID) {
+            return [item];
+          }
+          setIsEditing(false);
+          return itemNew;
+        })
+      );
+      setItem('');
     } else {
+      //  for creating unique ID
+      //const newItem = { id: new Date().getTime().toString(), title: item };
       setList([...list, item]);
       setItem('');
       console.log(list);
-      setAlert({
-        show: true,
-        msg: item + ' Added to the list',
-        type: 'success',
-      });
+      // setAlert({
+      //   show: true,
+      //   msg: item + ' Added to the list',
+      //   type: 'success',
+      // });
+      //  Optimized Alert Functionality with function
+      showALert(true, 'success', `${item} added to the list`);
     }
   }
   function deleteItem(id, name) {
     let newList = list.filter((listItem, index) => index !== id);
-    console.log(newList);
     setList(newList);
-    setAlert({
-      show: true,
-      msg: name + ' has been deleted from the list',
-      type: 'danger',
-    });
+    // setAlert({
+    //   show: true,
+    //   msg: name + ' has been deleted from the list',
+    //   type: 'danger',
+    // });
+    //  Optimized Alert Functionality with function
+    showALert(true, 'danger', `${name} deleted from list`);
+  }
+  //  Edit functionality
+
+  function editItem(id) {
+    const selectedItemID = list.find((item, index) => index === id);
+    setIsEditing(true);
+    setEditID(id);
+    setItem(selectedItemID);
   }
   function clearAll() {
-    setAlert({
-      show: true,
-      msg: 'List Deleted',
-      type: 'danger',
-    });
+    // setAlert({
+    //   show: true,
+    //   msg: 'List Deleted',
+    //   type: 'danger',
+    // });
+    //  Optimized Alert Functionality with function
+    showALert(true, 'danger', `All items deleted from list`);
     setList([]);
   }
-  useEffect(() => {
-    const timeOut = setTimeout(() => {
-      setAlert({ show: false, msg: '', type: '' });
-    }, 3000);
-    return () => clearTimeout(timeOut);
-  }, [alert]);
+  //  Optimized Alert Functionality with function
+  const showALert = (show = false, type = '', msg = '') => {
+    setAlert({ show, type, msg });
+  };
   return (
     <>
       <section className="section-center">
         <form className="grocery-form" onSubmit={handleSubmit}>
-          {alert.show ? <Alert message={alert.msg} type={alert.type} /> : ''}
+          {alert.show ? (
+            <Alert {...alert} removeAlert={showALert} list={list} />
+          ) : (
+            ''
+          )}
 
           <h3>grocery bud</h3>
           <div className="form-control">
@@ -82,6 +111,7 @@ function App() {
                     key={index}
                     name={listItem}
                     deleteItem={deleteItem}
+                    editItem={editItem}
                     id={index}
                   />
                 );
