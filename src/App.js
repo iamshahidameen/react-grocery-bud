@@ -29,8 +29,8 @@ function App() {
       });
     }
   }
-  function deleteItem(name) {
-    let newList = list.filter((listItem) => listItem !== name);
+  function deleteItem(id, name) {
+    let newList = list.filter((listItem, index) => index !== id);
     console.log(newList);
     setList(newList);
     setAlert({
@@ -50,7 +50,7 @@ function App() {
   useEffect(() => {
     const timeOut = setTimeout(() => {
       setAlert({ show: false, msg: '', type: '' });
-    }, 5000);
+    }, 3000);
     return () => clearTimeout(timeOut);
   }, [alert]);
   return (
@@ -78,7 +78,12 @@ function App() {
             <div className="grocery-list">
               {list.map((listItem, index) => {
                 return (
-                  <List key={index} name={listItem} deleteItem={deleteItem} />
+                  <List
+                    key={index}
+                    name={listItem}
+                    deleteItem={deleteItem}
+                    id={index}
+                  />
                 );
               })}
             </div>
