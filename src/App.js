@@ -2,9 +2,18 @@ import React, { useState, useEffect } from 'react';
 import List from './List';
 import Alert from './Alert';
 
+const getLocalStorage = () => {
+  let list = localStorage.getItem('list');
+  if (list) {
+    return JSON.parse(localStorage.getItem('list'));
+  } else {
+    return [];
+  }
+};
+
 function App() {
-  const [item, setItem] = useState('');
-  const [list, setList] = useState([]);
+  const [item, setItemState] = useState('');
+  const [list, setList] = useState(getLocalStorage());
   const [isEditing, setIsEditing] = useState(false);
   const [editID, setEditID] = useState(null);
   const [alert, setAlert] = useState({ show: false, msg: '', type: '' });
@@ -29,12 +38,12 @@ function App() {
           return itemNew;
         })
       );
-      setItem('');
+      setItemState('');
     } else {
       //  for creating unique ID
       //const newItem = { id: new Date().getTime().toString(), title: item };
       setList([...list, item]);
-      setItem('');
+      setItemState('');
       console.log(list);
       // setAlert({
       //   show: true,
@@ -62,7 +71,7 @@ function App() {
     const selectedItemID = list.find((item, index) => index === id);
     setIsEditing(true);
     setEditID(id);
-    setItem(selectedItemID);
+    setItemState(selectedItemID);
   }
   function clearAll() {
     // setAlert({
@@ -78,6 +87,9 @@ function App() {
   const showALert = (show = false, type = '', msg = '') => {
     setAlert({ show, type, msg });
   };
+  useEffect(() => {
+    localStorage.setItem('list', JSON.stringify(list));
+  }, [list]);
   return (
     <>
       <section className="section-center">
@@ -95,7 +107,7 @@ function App() {
               className="grocery"
               placeholder="e.g. eggs"
               value={item}
-              onChange={(e) => setItem(e.target.value)}
+              onChange={(e) => setItemState(e.target.value)}
             />
             <button type="submit" className="submit-btn">
               {isEditing ? 'Edit' : 'Submit'}
